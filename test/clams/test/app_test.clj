@@ -1,6 +1,6 @@
-(ns clams.core-test
+(ns clams.test.app-test
   (:require [clojure.test :refer :all]
-            [clams.core :refer :all]))
+            [clams.app :refer :all]))
 
 (deftest vacuous-test
   (testing "It works."

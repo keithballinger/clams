@@ -1,7 +1,7 @@
 (ns clams.app
   (:require [org.httpkit.server :as httpkit]))
 
-(defonce server (atom nil))
+(defonce ^:private server (atom nil))
 
 (defn- app
   "TODO: Get rid of this."
@@ -10,7 +10,15 @@
    :headers {"Content-Type" "text/html"}
    :body "Hello World"})
 
-(defn run-server
+(defn start-server
   [& args]
-  (reset! server (httpkit/run-server app {:port 5000}))
-  :ok)
+  (if (nil? @server)
+    (do (reset! server (httpkit/run-server app {:port 5000}))
+        nil)))
+
+(defn stop-server
+  []
+  (let [stop @server]
+    (if-not (nil? stop)
+      (do (stop)
+          (reset! server nil)))))

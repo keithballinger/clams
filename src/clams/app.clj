@@ -1,19 +1,19 @@
 (ns clams.app
-  (:require [org.httpkit.server :as httpkit]))
+  (:require [org.httpkit.server :as httpkit]
+            [clams.route :refer [compile-routes]]))
 
 (defonce ^:private server (atom nil))
 
 (defn- app
-  "TODO: Get rid of this."
-  [request]
-  {:status 200
-   :headers {"Content-Type" "text/html"}
-   :body "Hello World"})
+  [app-ns]
+  (let [routes-ns (symbol (str app-ns ".routes"))]
+    (require routes-ns)
+    (compile-routes app-ns (var-get (ns-resolve routes-ns 'routes)))))
 
 (defn start-server
-  [& args]
+  [app-ns & args]
   (if (nil? @server)
-    (do (reset! server (httpkit/run-server app {:port 5000}))
+    (do (reset! server (httpkit/run-server (app app-ns) {:port 5000}))
         nil)))
 
 (defn stop-server

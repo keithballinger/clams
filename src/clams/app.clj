@@ -4,21 +4,30 @@
 
 (defonce ^:private server (atom nil))
 
+(defn- wrap-middleware
+  [routes middleware]
+  (reduce #(%2 %1) routes middleware))
+
 (defn- app
-  [app-ns]
+  [app-ns middleware]
   (let [routes-ns (symbol (str app-ns ".routes"))]
     (require routes-ns)
-    (compile-routes app-ns (var-get (ns-resolve routes-ns 'routes)))))
+    (wrap-middleware
+      (compile-routes app-ns (var-get (ns-resolve routes-ns 'routes)))
+      middleware)))
 
 (defn start-server
-  [app-ns & args]
-  (if (nil? @server)
-    (do (reset! server (httpkit/run-server (app app-ns) {:port 5000}))
-        nil)))
+  ([app-ns]
+    (start-server app-ns {}))
+  ([app-ns opts]
+    (when (nil? @server)
+      (let [middleware (:middleware opts)
+            port       (get opts :port 5000)]
+        (reset! server (httpkit/run-server (app app-ns middleware) {:port port}))))))
 
 (defn stop-server
   []
   (let [stop @server]
-    (if-not (nil? stop)
-      (do (stop)
-          (reset! server nil)))))
+    (when-not (nil? stop)
+      (stop)
+      (reset! server nil))))

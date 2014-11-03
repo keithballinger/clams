@@ -3,7 +3,7 @@
             [clams.util :refer [redefmacro]]
             clout.core
             compojure.core
-            [compojure.route :refer [not-found]]))
+            compojure.route))
 
 ;; HTTP Methods
 (def GET     :get)
@@ -43,11 +43,19 @@
     :else
       (throw (Exception. "Unusual route; not sure what to do; dying."))))
 
+(defn- make-app-routes
+  [app-ns routes]
+  (for [[method pathspec route-key opts] routes]  ;; TODO: opts currently is useless
+    (compojure.core/make-route
+      method
+      (prepare-route pathspec)
+      (resolve-controller app-ns route-key))))
+
+(defn- make-default-routes
+  []
+  [(compojure.route/not-found "404 Not Found")])
+
 (defn compile-routes
   [app-ns routes]
   (apply compojure.core/routes
-    (for [[method pathspec route-key opts] routes]  ;; TODO: opts currently is useless
-      (compojure.core/make-route
-        method
-        (prepare-route pathspec)
-        (resolve-controller app-ns route-key)))))
+         (concat (make-app-routes app-ns routes) (make-default-routes))))

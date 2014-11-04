@@ -1,16 +1,29 @@
 (ns clams.app
-  (:require [org.httpkit.server :as httpkit]
-            [clams.route :refer [compile-routes]]))
+  (:require [clams.route :refer [compile-routes]]
+            [org.httpkit.server :as httpkit]
+            ring.middleware.json
+            ring.middleware.keyword-params
+            ring.middleware.nested-params
+            ring.middleware.params))
 
 (defonce ^:private server (atom nil))
+
+(defonce ^:private default-middleware
+  [ring.middleware.keyword-params/wrap-keyword-params
+   ring.middleware.nested-params/wrap-nested-params
+   ring.middleware.params/wrap-params
+   #(ring.middleware.json/wrap-json-body % {:keywords? true})
+   ring.middleware.json/wrap-json-params
+   ring.middleware.json/wrap-json-response])
 
 (defn- wrap-middleware
   [routes middleware]
   (reduce #(%2 %1) routes middleware))
 
 (defn- app
-  [app-ns middleware]
-  (let [routes-ns (symbol (str app-ns ".routes"))]
+  [app-ns app-middleware]
+  (let [routes-ns (symbol (str app-ns ".routes"))
+        middleware (concat default-middleware app-middleware)]
     (require routes-ns)
     (wrap-middleware
       (compile-routes app-ns (var-get (ns-resolve routes-ns 'routes)))

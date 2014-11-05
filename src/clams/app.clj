@@ -22,7 +22,7 @@
 
 (defn- app
   [app-ns app-middleware]
-  (let [routes-ns (symbol (str app-ns ".routes"))
+  (let [routes-ns  (symbol (str app-ns ".routes"))
         middleware (concat default-middleware app-middleware)]
     (require routes-ns)
     (wrap-middleware

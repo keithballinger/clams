@@ -1,5 +1,6 @@
 (ns clams.route
   (:require [clojure.string :as string]
+            [clams.params :as params]
             [clams.util :refer [redefmacro]]
             clout.core
             compojure.core
@@ -31,6 +32,10 @@
     (require ctrl-ns)
     (ns-resolve ctrl-ns ctrl-fn)))
 
+(defn- make-controller
+  [app-ns route-key]
+  (params/wrap-controller (resolve-controller app-ns route-key)))
+
 ;; Hack around Compojure's private and macro-oriented prepare-route function.
 ;; This is less than ideal.
 (defn- prepare-route
@@ -49,7 +54,7 @@
     (compojure.core/make-route
       method
       (prepare-route pathspec)
-      (resolve-controller app-ns route-key))))
+      (make-controller app-ns route-key))))
 
 (defn- make-default-routes
   []

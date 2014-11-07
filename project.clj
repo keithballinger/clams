@@ -11,4 +11,5 @@
                  [metosin/ring-http-response "0.5.1"]
                  [prismatic/schema "0.3.2"]
                  [ring "1.3.1"]
-                 [ring/ring-json "0.3.1"]])
+                 [ring/ring-json "0.3.1"]
+                 [ring-mock "0.1.5"]])

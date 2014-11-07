@@ -30,7 +30,7 @@
   (let [parser (coerce/coercer schema coerce/json-coercion-matcher)
         params (parser (:params req))]
     (if (utils/error? params)
-      (response/bad-request! "Parameter validation failed.")
+      (response/bad-request! (str "Parameter validation failed. Got: " (:params req)))
       params)))
 
 (defn wrap-controller

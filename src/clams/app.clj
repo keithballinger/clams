@@ -22,14 +22,16 @@
   [routes middleware]
   (reduce #(%2 %1) routes middleware))
 
+(defn routes
+  "Loads and compiles the app routes."
+  [app-ns]
+  (let [routes-ns (symbol (str app-ns ".routes"))]
+    (require routes-ns)
+    (compile-routes app-ns (var-get (ns-resolve routes-ns 'routes)))))
+
 (defn- app
   [app-ns app-middleware]
-  (let [routes-ns  (symbol (str app-ns ".routes"))
-        middleware (concat default-middleware app-middleware)]
-    (require routes-ns)
-    (wrap-middleware
-      (compile-routes app-ns (var-get (ns-resolve routes-ns 'routes)))
-      middleware)))
+  (wrap-middleware (routes app-ns) (concat default-middleware app-middleware)))
 
 (defn start-server
   ([app-ns]

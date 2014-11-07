@@ -1,5 +1,6 @@
 (ns clams.params
-  (:require [clams.util :refer [redef]]
+  (:require [clams.response :as response]
+            [clams.util :refer [redef]]
             [schema.coerce :as coerce]
             [schema.core :as s]
             [schema.utils :as utils]))
@@ -29,7 +30,7 @@
   (let [parser (coerce/coercer schema coerce/json-coercion-matcher)
         params (parser (:params req))]
     (if (utils/error? params)
-      (throw (Exception. "Validation Error"))
+      (response/bad-request! "Parameter validation failed.")
       params)))
 
 (defn wrap-controller

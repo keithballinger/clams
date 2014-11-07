@@ -1,6 +1,7 @@
 (ns clams.app
   (:require [clams.route :refer [compile-routes]]
             [org.httpkit.server :as httpkit]
+            ring.middleware.http-response
             ring.middleware.json
             ring.middleware.keyword-params
             ring.middleware.nested-params
@@ -9,7 +10,8 @@
 (defonce ^:private server (atom nil))
 
 (defonce ^:private default-middleware
-  [ring.middleware.keyword-params/wrap-keyword-params
+  [ring.middleware.http-response/catch-response
+   ring.middleware.keyword-params/wrap-keyword-params
    ring.middleware.nested-params/wrap-nested-params
    ring.middleware.params/wrap-params
    #(ring.middleware.json/wrap-json-body % {:keywords? true})

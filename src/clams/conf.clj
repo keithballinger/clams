@@ -17,7 +17,7 @@
   [name]
   (let [resource (io/resource (format "conf/%s.edn" name))]
     (if (nil? resource)
-      (throw (Exception. (format "Conf resource '%s' not found." name)))
+      {}  ;; Config file not found.
       (edn/read-string (slurp resource)))))
 
 (defn- getenv

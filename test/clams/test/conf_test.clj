@@ -28,6 +28,11 @@
 (deftest not-loaded-test
   (is (thrown-with-msg? AssertionError #"not loaded" (conf/get :log-level))))
 
+(deftest file-not-found-test
+  (with-redefs [clojure.java.io/resource (fn [_] nil)]
+    (conf/load!)
+    (is (= (conf/get :log-level) nil))))
+
 (deftest get-from-edn-test
   ((wrap-edn-fixtures conf/load!))
   (is (= (conf/get :database-url) "sql://fake:1234/foobar"))

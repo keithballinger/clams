@@ -33,7 +33,8 @@
 
 (defn load!
   []
-  (reset! full-conf (merge (read-config "default")
+  (reset! full-conf (merge (read-config "base")
+                           (read-config "default")
                            (read-env))))
 
 (defn unload!

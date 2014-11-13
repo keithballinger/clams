@@ -41,7 +41,7 @@
     (when (nil? @server)
       (conf/load!)
       (let [middleware (:middleware opts)
-            port       (get opts :port 5000)]
+            port       (conf/get :port)]
         (reset! server (httpkit/run-server (app app-ns middleware) {:port port}))))))
 
 (defn stop-server

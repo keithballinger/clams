@@ -43,3 +43,7 @@
   (is (= (conf/get :database-url) "sql://dev.fake:1234/foobar"))
   (is (= (conf/get-all) {:database-url "sql://dev.fake:1234/foobar"
                          :log-level    :debug})))
+
+(deftest base-test
+  (conf/load!)
+  (is (= (conf/get :port) 5000)))

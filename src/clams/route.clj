@@ -15,6 +15,9 @@
 (def OPTIONS :options)
 (def PATCH   :patch)
 
+;; Special Routes
+(def static :static)
+
 (defn controller
   "Returns the namespace and name of the controller function indicated by the
   given app namespace and route key."
@@ -51,10 +54,14 @@
 (defn- make-app-routes
   [app-ns routes]
   (for [[method pathspec route-key opts] routes]  ;; TODO: opts currently is useless
-    (compojure.core/make-route
-      method
-      (prepare-route pathspec)
-      (make-controller app-ns route-key))))
+    (cond
+      (= method static)
+        (compojure.route/resources pathspec {:root "static"})
+      :else
+        (compojure.core/make-route
+          method
+          (prepare-route pathspec)
+          (make-controller app-ns route-key)))))
 
 (defn- make-default-routes
   []

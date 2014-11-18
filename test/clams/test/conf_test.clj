@@ -44,6 +44,11 @@
   (is (= (conf/get-all) {:database-url "sql://dev.fake:1234/foobar"
                          :log-level    :debug})))
 
+(deftest get-not-found-arg-test
+  ((wrap-edn-fixtures conf/load!))
+  (is (= (conf/get :xxx) nil))
+  (is (= (conf/get :xxx :foobar) :foobar)))
+
 (deftest base-test
   (conf/load!)
   (is (= (conf/get :port) 5000)))

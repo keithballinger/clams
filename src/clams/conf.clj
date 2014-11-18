@@ -46,9 +46,11 @@
   (assert (not (nil? @full-conf)) "Config not loaded!"))
 
 (defn get
-  [k]
-  (assert-loaded)
-  (core-get @full-conf k))
+  ([k]
+    (get k nil))
+  ([k not-found]
+    (assert-loaded)
+    (core-get @full-conf k not-found)))
 
 (defn get-all
   []

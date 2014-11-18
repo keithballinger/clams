@@ -15,10 +15,11 @@
 
 (defn- read-config
   [name]
-  (let [resource (io/resource (format "conf/%s.edn" name))]
-    (if (nil? resource)
-      {}  ;; Config file not found.
-      (edn/read-string (slurp resource)))))
+  (when name
+    (let [resource (io/resource (format "conf/%s.edn" name))]
+      (if (nil? resource)
+        {}  ;; Config file not found.
+        (edn/read-string (slurp resource))))))
 
 (defn- getenv
   []
@@ -29,13 +30,21 @@
   (into {} (for [[k v] (getenv)]
     [(normalize-key k) v])))
 
+(defn- get-clams-env
+  [env]
+  (when-let [cenv (:clams-env env)]
+    (string/lower-case cenv)))
+
 (defonce ^:private full-conf (atom nil))
 
 (defn load!
   []
-  (reset! full-conf (merge (read-config "base")
-                           (read-config "default")
-                           (read-env))))
+  (let [env  (read-env)
+        cenv (get-clams-env env)]
+    (reset! full-conf (merge (read-config "base")
+                             (read-config "default")
+                             (read-config cenv)
+                             env))))
 
 (defn unload!
   []

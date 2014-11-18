@@ -2,24 +2,42 @@
   (:require [clojure.test :refer :all]
             [clams.conf :as conf]))
 
-(def mock-config-edn
+(def mock-conf-base-edn
+  "{
+     :port 5000
+   }")
+
+(def mock-conf-default-edn
   "{
      :database-url \"sql://fake:1234/foobar\"
      :log-level :debug ;; verbose!
    }")
 
-(defn wrap-edn-fixtures
-  [f]
-  (fn []
-    (with-redefs [clojure.java.io/resource (fn [_] "MOCK")
-                  clojure.core/slurp       (fn [_] mock-config-edn)]
-      (f))))
+(def mock-conf-dev-edn
+  "{
+     :database-url \"sql://fake:1234/devdb\"
+   }")
 
-(defn wrap-env-fixtures
-  [f]
-  (fn []
-    (with-redefs [clams.conf/getenv (fn [] {"DATABASE_URL" "sql://dev.fake:1234/foobar"})]
-      (f))))
+(def mock-conf-prod-edn
+  "{
+     :database-url \"sql://fake:1234/proddb\"
+   }")
+
+(defn stub-slurp
+  [file]
+  (condp = file
+    "conf/prod.edn"    mock-conf-prod-edn
+    "conf/dev.edn"     mock-conf-dev-edn
+    "conf/default.edn" mock-conf-default-edn
+    "conf/base.edn"    mock-conf-base-edn
+    (throw (Exception. "Unknown fixture."))))
+
+(defn wrap-fixtures
+  [env f]
+  (with-redefs [clojure.java.io/resource identity
+                clojure.core/slurp       stub-slurp
+                clams.conf/getenv        (fn [] env)]
+    (f)))
 
 (use-fixtures :each (fn [f]
   (f)
@@ -33,22 +51,33 @@
     (conf/load!)
     (is (= (conf/get :log-level) nil))))
 
-(deftest get-from-edn-test
-  ((wrap-edn-fixtures conf/load!))
+(deftest get-from-base-test
+  (conf/load!)
+  (is (= (conf/get :port) 5000)))
+
+(deftest get-from-default-test
+  (wrap-fixtures {} conf/load!)
   (is (= (conf/get :database-url) "sql://fake:1234/foobar"))
   (is (= (conf/get :log-level) :debug)))
 
+(deftest get-from-clams-env-test
+  (testing "dev"
+    (wrap-fixtures {"CLAMS_ENV" "dev"} conf/load!)
+    (is (= (conf/get :database-url) "sql://fake:1234/devdb"))
+    (conf/unload!))
+  (testing "prod"
+    (wrap-fixtures {"clams.env" "PrOd"} conf/load!)
+    (is (= (conf/get :database-url) "sql://fake:1234/proddb"))
+    (conf/unload!)))
+
 (deftest get-from-env-test
-  ((-> conf/load! wrap-env-fixtures wrap-edn-fixtures))
+  (wrap-fixtures {"DATABASE_URL" "sql://dev.fake:1234/foobar"} conf/load!)
   (is (= (conf/get :database-url) "sql://dev.fake:1234/foobar"))
   (is (= (conf/get-all) {:database-url "sql://dev.fake:1234/foobar"
-                         :log-level    :debug})))
+                         :log-level    :debug
+                         :port         5000})))
 
 (deftest get-not-found-arg-test
-  ((wrap-edn-fixtures conf/load!))
+  (wrap-fixtures {} conf/load!)
   (is (= (conf/get :xxx) nil))
   (is (= (conf/get :xxx :foobar) :foobar)))
-
-(deftest base-test
-  (conf/load!)
-  (is (= (conf/get :port) 5000)))

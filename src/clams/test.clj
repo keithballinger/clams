@@ -7,9 +7,9 @@
             ring.middleware.params
             ring.mock.request))
 
-(redef ring.mock.request [content-type request])
+(redef ring.mock.request [content-type body header query-string request])
 
-(defn app
+(defn test-app
   [app-ns]
   (-> (clams.app/routes app-ns)
       ring.middleware.keyword-params/wrap-keyword-params

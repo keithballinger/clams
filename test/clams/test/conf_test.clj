@@ -43,9 +43,6 @@
   (f)
   (conf/unload!)))
 
-(deftest not-loaded-test
-  (is (thrown-with-msg? AssertionError #"not loaded" (conf/get :log-level))))
-
 (deftest file-not-found-test
   (with-redefs [clojure.java.io/resource (fn [_] nil)]
     (conf/load!)
@@ -81,3 +78,10 @@
   (wrap-fixtures {} conf/load!)
   (is (= (conf/get :xxx) nil))
   (is (= (conf/get :xxx :foobar) :foobar)))
+
+(deftest get-all-test
+  (wrap-fixtures {} conf/load!)
+  (is (= (conf/get-all)
+         {:database-url "sql://fake:1234/foobar"
+          :log-level    :debug
+          :port         5000})))

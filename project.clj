@@ -23,6 +23,7 @@
                              :sign-releases false}}
   :plugins
     [
+     [com.jakemccrary/lein-test-refresh "0.5.1"]
      [jonase/eastwood "0.1.5"]
      [lein-test-out "0.3.1"]
      [s3-wagon-private "1.1.2"]

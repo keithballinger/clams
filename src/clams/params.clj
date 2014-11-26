@@ -5,7 +5,7 @@
             [schema.core :as s]
             [schema.utils :as utils]))
 
-(redef schema.core [Bool Int Keyword Num Str])
+(redef schema.core [Any Bool Int Keyword Num Str])
 
 (def ^:private schema-key :params)
 

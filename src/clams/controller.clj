@@ -51,6 +51,12 @@
 
         (defcontroller mycontroller [myvar :- clams.params/Int] ...)
 
+      Where type is one of these standard Clojure types `[Any Bool Int
+      Keyword Num Str]` or our special builtin type `Request`.  Note
+      that `Any` is any type (including nil).  `Request` is the Ring
+      request object that is automatically extracted from the
+      middleware by Clams.
+
    2. A regular un-annotated paramater list.  In this case all the
       paramaters are of type `clams.params/Any`."
   [sym & macro-args]

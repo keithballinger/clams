@@ -52,6 +52,17 @@
                [[0 0] [1 1] [-1 -1] [-1.0 -1]]
                [1.1 "1" "-1" "1.00" true nil]))
 
+(defn ^{:params [:req p/Request :foo p/Int]} simple-req-object
+  [req foo]
+  [(inc (:foo (:params req)))
+   (dec foo)])
+
+(deftest simple-req-object-test
+  (let [n (rand-int 1000)]
+    (simple-test #'simple-req-object
+                 [[n [(inc n) (dec n)]]]
+                 ["fail" false :foo])))
+
 (defn ^{:params [:foo p/Keyword]} simple-keyword
   [foo]
   foo)
@@ -84,6 +95,23 @@
                 ["null" "null"]
                 ["" ""]]
                [1 true nil]))
+
+(defn ^{:params [:foo p/Any]} simple-any
+  [foo]
+  foo)
+
+(deftest simple-any-test
+  (let [obj (Object.)]
+    (simple-test #'simple-any
+                 [[true true]
+                  [88 88]
+                  [:bar :bar]
+                  [3.14 3.14]
+                  ["foo" "foo"]
+                  [obj obj]
+                  [nil nil]
+                  []]
+                 [])))
 
 (defn ^{:params [:foo p/Str :bar [p/Num] :baz [{:a p/Int :b p/Int}]]} complex
   [foo bar baz]

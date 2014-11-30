@@ -7,6 +7,10 @@
 
 (redef schema.core [Any Bool Int Keyword Num Str])
 
+(def Request
+  "The schema annotation for a Ring request object"
+  :request)
+
 (def ^:private schema-key :params)
 
 (defn- param-metadata
@@ -19,9 +23,14 @@
 
 (defn- metadata->schema
   "Transforms the params metadata format into a schema format
-  appropriate for validation."
+  appropriate for validation.  Our internal Request type is not part
+  of the schema validation."
   [params]
-  (into {} params))
+  (into {}
+        (filter (fn [[name type]]
+                  (when-not (= type Request)
+                    [name type]))
+                params)))
 
 (defn- parse-request-params
   "Parses the params in the request, including coercion from JSONish types
@@ -33,6 +42,11 @@
       (response/bad-request! (str "Parameter validation failed. Got: " (:params req)))
       params)))
 
+(defn- get-arg [valid-params name type req]
+  (if (= type Request)
+      req
+      (get valid-params name)))
+
 (defn wrap-controller
   "Wraps a controller function in a function that appropriately parses
   the controller's specified parameters. Note: Because we depend on its
@@ -41,6 +55,7 @@
   (if-let [params (param-metadata ctrl)]
     (fn [req]
       (let [valid-params (parse-request-params req (metadata->schema params))
-            args         (for [[k _] params] (get valid-params k))]
+            args         (for [[name type] params]
+                           (get-arg valid-params name type req))]
         (apply ctrl args)))
     ctrl))

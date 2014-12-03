@@ -150,13 +150,22 @@
     (doseq [params failures]
       (is (thrown? Exception (ctrl {:params params}))))))
 
-(defn arbitrary [req]
-  (get-in req [:user :id]))
-
-(defn ^{:params [:foo p/Str :bar arbitrary]} arbitrary-binding
+(defn ^{:params [:foo p/Request :bar p/Keyword]} request
   [foo bar]
   [foo bar])
 
-(deftest arbitrary-binding-test
-  (let [ctrl (p/wrap-controller #'arbitrary-binding)]
+(deftest request-test
+  (let [ctrl (p/wrap-controller #'request)
+        req  {:params {:bar :baz} :user :quux}]
+    (is (= (ctrl req) [req :baz]))))
+
+(defn user-defined [req]
+  (get-in req [:user :id]))
+
+(defn ^{:params [:foo p/Str :bar user-defined]} user-defined-binding
+  [foo bar]
+  [foo bar])
+
+(deftest user-defined-binding-test
+  (let [ctrl (p/wrap-controller #'user-defined-binding)]
     (is (= (ctrl {:params {:foo "abc"} :user {:id 123}}) ["abc" 123]))))

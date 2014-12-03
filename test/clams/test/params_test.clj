@@ -149,3 +149,14 @@
       (is (= (ctrl {:params params}) res)))
     (doseq [params failures]
       (is (thrown? Exception (ctrl {:params params}))))))
+
+(defn arbitrary [req]
+  (get-in req [:user :id]))
+
+(defn ^{:params [:foo p/Str :bar arbitrary]} arbitrary-binding
+  [foo bar]
+  [foo bar])
+
+(deftest arbitrary-binding-test
+  (let [ctrl (p/wrap-controller #'arbitrary-binding)]
+    (is (= (ctrl {:params {:foo "abc"} :user {:id 123}}) ["abc" 123]))))

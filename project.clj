@@ -9,7 +9,7 @@
      [clout "2.0.0"]
      [compojure "1.2.0"]
      [http-kit "2.1.17"]
-     [metosin/ring-http-response "0.5.1"]
+     [metosin/ring-http-response "0.5.2"]
      [org.clojure/clojure "1.6.0"]
      [org.clojure/tools.macro "0.1.5"]
      [prismatic/schema "0.3.2"]

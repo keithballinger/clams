@@ -10,14 +10,20 @@
 
 (defonce ^:private server (atom nil))
 
-(defonce ^:private default-middleware
+;; Note that these are applied in reverse order; i.e. from bottom to top.
+;;
+;; To be clear: that means that the functions at the bottom of this list will
+;; appear at the innermost form, wrapped one-by-one by the function above.
+;;
+;; In case that in turn wasn't clear, it means that wrap-params happens first,
+;; then the result of that is passed to wrap-nested-params.
+(defonce default-middleware
   [ring.middleware.http-response/catch-response
    ring.middleware.keyword-params/wrap-keyword-params
-   ring.middleware.nested-params/wrap-nested-params
-   ring.middleware.params/wrap-params
-   #(ring.middleware.json/wrap-json-body % {:keywords? true})
    ring.middleware.json/wrap-json-params
-   ring.middleware.json/wrap-json-response])
+   ring.middleware.json/wrap-json-response
+   ring.middleware.nested-params/wrap-nested-params
+   ring.middleware.params/wrap-params])
 
 (defn- wrap-middleware
   [routes middleware]

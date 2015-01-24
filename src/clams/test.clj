@@ -10,10 +10,5 @@
 (redef ring.mock.request [content-type body header query-string request])
 
 (defn test-app
-  [app-ns]
-  (-> (clams.app/routes app-ns)
-      ring.middleware.keyword-params/wrap-keyword-params
-      ring.middleware.nested-params/wrap-nested-params
-      ring.middleware.params/wrap-params
-      (ring.middleware.json/wrap-json-body {:keywords? true})
-      ring.middleware.json/wrap-json-params))
+  [app-ns & app-middleware]
+  (clams.app/app app-ns app-middleware))

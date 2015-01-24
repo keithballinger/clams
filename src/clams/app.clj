@@ -36,7 +36,7 @@
     (require routes-ns)
     (compile-routes app-ns (var-get (ns-resolve routes-ns 'routes)))))
 
-(defn- app
+(defn app
   [app-ns app-middleware]
   (wrap-middleware (routes app-ns) (concat default-middleware app-middleware)))
 

@@ -17,14 +17,14 @@
      [ring-mock "0.1.5"]
      [ring/ring-json "0.3.1"]
     ]
-  :repositories {"internal" {:url "s3p://standard-releases/releases/"
-                             :username :env
-                             :passphrase :env
+  :repositories {"internal" {:url "s3://standard-releases/releases/"
+                             :username :env/aws_access_key_id
+                             :passphrase :env/aws_secret_access_key
                              :sign-releases false}}
   :plugins
     [
      [com.jakemccrary/lein-test-refresh "0.5.1"]
      [jonase/eastwood "0.1.5"]
      [lein-test-out "0.3.1"]
-     [s3-wagon-private "1.1.2"]
+     [lein-maven-s3-wagon "0.2.4"]
     ])

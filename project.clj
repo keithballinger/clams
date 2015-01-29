@@ -13,7 +13,7 @@
      [org.clojure/clojure "1.6.0"]
      [org.clojure/tools.macro "0.1.5"]
      [prismatic/schema "0.3.1"]
-     [ring "1.3.2"]
+     [ring "1.3.1"]
      [ring-mock "0.1.5"]
      [ring/ring-json "0.3.1"]
     ]
@@ -23,7 +23,6 @@
                              :sign-releases false}}
   :plugins
     [
-     [com.jakemccrary/lein-test-refresh "0.5.1"]
      [jonase/eastwood "0.1.5"]
      [lein-test-out "0.3.1"]
      [lein-maven-s3-wagon "0.2.4"]

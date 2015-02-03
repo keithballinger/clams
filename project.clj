@@ -1,5 +1,5 @@
 (defproject clams
-  "0.1.0-SNAPSHOT"
+  "0.1.0"
   :description "Clams"
   :url "http://github.com/standardtreasury-internal/clams"
   :license {:name "Eclipse Public License"

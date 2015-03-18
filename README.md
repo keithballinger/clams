@@ -44,3 +44,5 @@ To generate and run a Clams app:
 Jim Brusstar ([@jimbru](https://github.com/jimbru)) and Chris Dean ([@ctdean](https://github.com/ctdean)).
 
 Copyright © 2014-present Standard Treasury.
+
+Released under the terms of the MIT License.

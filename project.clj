@@ -2,8 +2,8 @@
   "0.1.0"
   :description "Clams"
   :url "http://github.com/standardtreasury-internal/clams"
-  :license {:name "Eclipse Public License"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :license {:name "The MIT License"
+            :url "http://opensource.org/licenses/MIT"}
   :dependencies
     [
      [clout "2.0.0"]

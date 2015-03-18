@@ -1,7 +1,6 @@
-(defproject clams
-  "0.1.0"
-  :description "Clams"
-  :url "http://github.com/standardtreasury-internal/clams"
+(defproject clams "0.1.0"
+  :description "Clojure with Clams. A framework for web apps."
+  :url "https://github.com/standardtreasury/clams"
   :license {:name "The MIT License"
             :url "http://opensource.org/licenses/MIT"}
   :dependencies
@@ -16,14 +15,4 @@
      [ring "1.3.1"]
      [ring-mock "0.1.5"]
      [ring/ring-json "0.3.1"]
-    ]
-  :repositories {"internal" {:url "s3://standard-releases/releases/"
-                             :username :env/aws_access_key_id
-                             :passphrase :env/aws_secret_access_key
-                             :sign-releases false}}
-  :plugins
-    [
-     [jonase/eastwood "0.1.5"]
-     [lein-test-out "0.3.1"]
-     [lein-maven-s3-wagon "0.2.4"]
     ])

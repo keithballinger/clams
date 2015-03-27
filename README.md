@@ -13,7 +13,7 @@ fabricator.**
 
 Add the following dependency to your `project.clj` file:
 
-    [clams "0.1.0"]
+[![Clojars Project](http://clojars.org/clams/latest-version.svg)](http://clojars.org/clams)
 
 ## Getting Started
 

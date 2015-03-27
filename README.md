@@ -3,7 +3,7 @@
 Clams is a web application framework for Clojure. Clams builds on top of
 [Ring](https://github.com/ring-clojure/ring) with the aim of providing a
 complete, "batteries included" package for web development. Structurally, it is
-a collections of Clojure libraries with glue code to handle routing, controllers,
+a collection of Clojure libraries with glue code to handle routing, controllers,
 configuration, and HTTP startup.
 
 **Note: This is very early software and should be considered unstable. Caveat

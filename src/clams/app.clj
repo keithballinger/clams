@@ -40,6 +40,14 @@
   [app-ns app-middleware]
   (wrap-middleware (routes app-ns) (concat default-middleware app-middleware)))
 
+(defn- str->int
+  "Convert a string to an integral number."
+  [s]
+  (when s
+    (if (number? s)
+        s
+        (Long/parseLong s))))
+
 (defn start-server
   ([app-ns]
     (start-server app-ns {}))
@@ -47,7 +55,7 @@
     (when (nil? @server)
       (conf/load!)
       (let [middleware (:middleware opts)
-            port       (conf/get :port)]
+            port       (str->int (conf/get :port))]
         (reset! server (httpkit/run-server (app app-ns middleware) {:port port}))))))
 
 (defn stop-server
